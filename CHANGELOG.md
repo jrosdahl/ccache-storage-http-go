@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Improve logging of failures.
+- Adjust max idle connection pool size from 10 to 32.
 
 ## [0.5] - 2026-03-18
 

@@ -27,8 +27,8 @@ func newStorageClient(cfg *config, logger *logger) (*storageClient, error) {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 		Transport: &http.Transport{
-			MaxIdleConns:        100,
-			MaxIdleConnsPerHost: 10,
+			MaxIdleConns:        32,
+			MaxIdleConnsPerHost: 32,
 			IdleConnTimeout:     90 * time.Second,
 		},
 	}
