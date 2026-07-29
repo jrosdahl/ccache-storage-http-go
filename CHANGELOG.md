@@ -89,3 +89,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Implemented first version.
+
+[Unreleased]: https://github.com/ccache/ccache-storage-http-go/compare/v0.8.0...HEAD
+[0.8]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.8
+[0.7]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.7
+[0.6]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.6
+[0.5]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.5
+[0.4]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.4
+[0.3]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.3
+[0.2]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.2
+[0.1]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.1
