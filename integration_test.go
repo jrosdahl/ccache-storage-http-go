@@ -21,9 +21,28 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	storagehelper "github.com/ccache/ccache-go-storage-helper"
 )
 
 const testHelperEnv = "CRSH_TEST_HELPER"
+
+const (
+	capGetPutRemove = storagehelper.CapabilityGetPutRemove
+	capInfo         = storagehelper.CapabilityInfo
+	capExists       = storagehelper.CapabilityExists
+
+	requestGet  = storagehelper.RequestGet
+	requestPut  = storagehelper.RequestPut
+	requestStop = storagehelper.RequestStop
+	requestInfo = storagehelper.RequestInfo
+
+	responseOK   = storagehelper.ResponseOK
+	responseNoop = storagehelper.ResponseNoop
+	responseErr  = storagehelper.ResponseErr
+
+	putFlagOverwrite = storagehelper.PutFlagOverwrite
+)
 
 func TestMain(m *testing.M) {
 	// When re-invoked as the helper process, behave as the real binary.

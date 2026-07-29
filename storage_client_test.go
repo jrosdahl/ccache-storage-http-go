@@ -14,6 +14,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	storagehelper "github.com/ccache/ccache-go-storage-helper"
 )
 
 type delayedBodyCloseTransport struct {
@@ -51,7 +53,7 @@ func TestStorageClientAllowsConcurrentRequests(t *testing.T) {
 		URL:     baseURL,
 		Layout:  layoutSubdirs,
 		Headers: map[string]string{},
-	}, newLogger(""))
+	}, storagehelper.NewLogger(""))
 	if err != nil {
 		t.Fatalf("newStorageClient returned error: %v", err)
 	}
@@ -61,7 +63,7 @@ func TestStorageClientAllowsConcurrentRequests(t *testing.T) {
 		wg.Add(1)
 		go func(key []byte) {
 			defer wg.Done()
-			body, _, found, err := client.get(key)
+			body, _, found, err := client.Get(key)
 			if body != nil {
 				defer body.Close()
 			}
@@ -111,13 +113,13 @@ func TestStorageClientPutWithoutOverwritePropagatesHeadErrors(t *testing.T) {
 		URL:     baseURL,
 		Layout:  layoutFlat,
 		Headers: map[string]string{},
-	}, newLogger(""))
+	}, storagehelper.NewLogger(""))
 	if err != nil {
 		t.Fatalf("newStorageClient returned error: %v", err)
 	}
 
 	payload := []byte("payload")
-	stored, err := client.put([]byte{0xf0, 0x0d}, bytes.NewReader(payload), int64(len(payload)), false)
+	stored, err := client.Put([]byte{0xf0, 0x0d}, bytes.NewReader(payload), int64(len(payload)), false)
 	if err == nil {
 		t.Fatal("put returned nil error, want HTTP 500")
 	}
@@ -141,12 +143,12 @@ func TestStorageClientPutWaitsForTransportToCloseBody(t *testing.T) {
 		},
 		baseURL: &url.URL{Scheme: "http", Host: "example.com"},
 		layout:  layoutFlat,
-		logger:  newLogger(""),
+		logger:  storagehelper.NewLogger(""),
 	}
 
 	result := make(chan error, 1)
 	go func() {
-		_, err := client.put([]byte{0xf0, 0x0d}, bytes.NewReader([]byte("payload")), 7, true)
+		_, err := client.Put([]byte{0xf0, 0x0d}, bytes.NewReader([]byte("payload")), 7, true)
 		result <- err
 	}()
 

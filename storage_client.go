@@ -14,6 +14,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	storagehelper "github.com/ccache/ccache-go-storage-helper"
 )
 
 const httpTransportBufferSize = 64 << 10
@@ -26,7 +28,7 @@ type storageClient struct {
 	headers       map[string]string
 	basicAuthUser string
 	basicAuthPass string
-	logger        *logger
+	logger        *storagehelper.Logger
 }
 
 // requestBody lets callers wait until the HTTP transport has stopped reading
@@ -55,7 +57,7 @@ func (b *requestBody) wait() {
 	<-b.done
 }
 
-func newStorageClient(cfg *config, logger *logger) (*storageClient, error) {
+func newStorageClient(cfg *config, logger *storagehelper.Logger) (*storageClient, error) {
 	connectionPoolSize := max(32, runtime.GOMAXPROCS(0))
 	client := &http.Client{
 		Transport: &http.Transport{
@@ -91,7 +93,7 @@ func newStorageClient(cfg *config, logger *logger) (*storageClient, error) {
 			login, password, err := findNetrcCredentials(netrcPath, cfg.URL.Hostname(), requestedLogin)
 			if err != nil {
 				if !os.IsNotExist(err) {
-					logger.logf("Warning: could not read netrc file %q: %v", netrcPath, err)
+					logger.Logf("Warning: could not read netrc file %q: %v", netrcPath, err)
 				}
 			} else {
 				sc.basicAuthUser = login
@@ -147,23 +149,23 @@ func (s *storageClient) buildURL(key []byte) (string, error) {
 	return base.String(), nil
 }
 
-func (s *storageClient) exists(key []byte) (bool, error) {
+func (s *storageClient) Exists(key []byte) (bool, error) {
 	urlStr, err := s.buildURL(key)
 	if err != nil {
 		return false, err
 	}
 
-	s.logger.logf("EXISTS %s", urlStr)
+	s.logger.Logf("EXISTS %s", urlStr)
 	return s.head(urlStr)
 }
 
-func (s *storageClient) get(key []byte) (io.ReadCloser, int64, bool, error) {
+func (s *storageClient) Get(key []byte) (io.ReadCloser, int64, bool, error) {
 	urlStr, err := s.buildURL(key)
 	if err != nil {
 		return nil, 0, false, err
 	}
 
-	s.logger.logf("GET %s", urlStr)
+	s.logger.Logf("GET %s", urlStr)
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
 		return nil, 0, false, err
@@ -189,7 +191,7 @@ func (s *storageClient) get(key []byte) (io.ReadCloser, int64, bool, error) {
 	return resp.Body, resp.ContentLength, true, nil
 }
 
-func (s *storageClient) put(key []byte, value io.Reader, size int64, overwrite bool) (bool, error) {
+func (s *storageClient) Put(key []byte, value io.Reader, size int64, overwrite bool) (bool, error) {
 	urlStr, err := s.buildURL(key)
 	if err != nil {
 		return false, err
@@ -205,7 +207,7 @@ func (s *storageClient) put(key []byte, value io.Reader, size int64, overwrite b
 		}
 	}
 
-	s.logger.logf("PUT %s (%d bytes)", urlStr, size)
+	s.logger.Logf("PUT %s (%d bytes)", urlStr, size)
 	body := newRequestBody(value)
 	req, err := http.NewRequest("PUT", urlStr, body)
 	if err != nil {
@@ -231,13 +233,13 @@ func (s *storageClient) put(key []byte, value io.Reader, size int64, overwrite b
 	return false, fmt.Errorf("HTTP %d", resp.StatusCode)
 }
 
-func (s *storageClient) remove(key []byte) (bool, error) {
+func (s *storageClient) Remove(key []byte) (bool, error) {
 	urlStr, err := s.buildURL(key)
 	if err != nil {
 		return false, err
 	}
 
-	s.logger.logf("DELETE %s", urlStr)
+	s.logger.Logf("DELETE %s", urlStr)
 	req, err := http.NewRequest("DELETE", urlStr, nil)
 	if err != nil {
 		return false, err

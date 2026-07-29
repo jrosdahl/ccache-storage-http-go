@@ -6,11 +6,9 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"os"
-	"runtime"
-	"strconv"
 	"strings"
-	"time"
+
+	storagehelper "github.com/ccache/ccache-go-storage-helper"
 )
 
 type layout string
@@ -22,10 +20,8 @@ const (
 )
 
 type config struct {
-	IPCEndpoint string
+	*storagehelper.Config
 	URL         *url.URL
-	IdleTimeout time.Duration
-	Diagnostics []string
 	Layout      layout
 	BearerToken string
 	Headers     map[string]string
@@ -33,53 +29,28 @@ type config struct {
 	NetrcFile   string
 }
 
-func parseConfig(logger *logger) (*config, error) {
-	ipcEndpoint := os.Getenv("CRSH_IPC_ENDPOINT")
-	if runtime.GOOS == "windows" {
-		ipcEndpoint = `\\.\pipe\` + ipcEndpoint
+func parseConfig(logger *storagehelper.Logger) (*config, error) {
+	commonConfig, err := storagehelper.ParseConfig(logger)
+	if err != nil {
+		return nil, err
 	}
-	logger.logf("IPC endpoint: %s", ipcEndpoint)
 
 	cfg := &config{
-		IPCEndpoint: ipcEndpoint,
-		Layout:      layoutSubdirs,
-		Headers:     make(map[string]string),
+		Config:  commonConfig,
+		Layout:  layoutSubdirs,
+		Headers: make(map[string]string),
 	}
 
-	urlStr := os.Getenv("CRSH_URL")
-	if urlStr == "" {
-		return nil, fmt.Errorf("CRSH_URL not set")
-	}
-	parsedURL, err := url.Parse(urlStr)
+	parsedURL, err := url.Parse(cfg.Config.URL)
 	if err != nil {
 		return nil, fmt.Errorf("invalid CRSH_URL: %w", err)
 	}
 	cfg.URL = parsedURL
-	logger.logf("URL: %s", cfg.URL)
+	logger.Logf("URL: %s", cfg.URL)
 
-	idleTimeout := os.Getenv("CRSH_IDLE_TIMEOUT")
-	if idleTimeout == "" {
-		idleTimeout = "0"
-	}
-	timeoutSecs, err := strconv.Atoi(idleTimeout)
-	if err != nil {
-		return nil, fmt.Errorf("invalid CRSH_IDLE_TIMEOUT: %w", err)
-	}
-	cfg.IdleTimeout = time.Duration(timeoutSecs) * time.Second
-	logger.logf("Idle timeout: %s", cfg.IdleTimeout)
-
-	numAttr := os.Getenv("CRSH_NUM_ATTR")
-	if numAttr == "" {
-		numAttr = "0"
-	}
-	n, err := strconv.Atoi(numAttr)
-	if err != nil {
-		return nil, fmt.Errorf("invalid CRSH_NUM_ATTR: %w", err)
-	}
-	for i := 0; i < n; i++ {
-		key := os.Getenv(fmt.Sprintf("CRSH_ATTR_KEY_%d", i))
-		value := os.Getenv(fmt.Sprintf("CRSH_ATTR_VALUE_%d", i))
-		logger.logf("Attribute: %s=%s", key, value)
+	for _, attribute := range cfg.Attributes {
+		key := attribute.Key
+		value := attribute.Value
 
 		switch key {
 		case "bearer-token":
@@ -87,12 +58,9 @@ func parseConfig(logger *logger) (*config, error) {
 		case "header":
 			idx := strings.Index(value, "=")
 			if idx >= 0 {
-				headerKey := value[:idx]
-				headerValue := value[idx+1:]
-				cfg.Headers[headerKey] = headerValue
+				cfg.Headers[value[:idx]] = value[idx+1:]
 			} else {
-				msg := fmt.Sprintf("error: invalid header (no \"=\"): %s", value)
-				cfg.Diagnostics = append(cfg.Diagnostics, msg)
+				cfg.Diagnostics = append(cfg.Diagnostics, fmt.Sprintf("error: invalid header (no \"=\"): %s", value))
 			}
 		case "layout":
 			switch layout(value) {
@@ -112,7 +80,7 @@ func parseConfig(logger *logger) (*config, error) {
 	}
 
 	for _, diag := range cfg.Diagnostics {
-		logger.logf("%s", diag)
+		logger.Logf("%s", diag)
 	}
 
 	return cfg, nil
