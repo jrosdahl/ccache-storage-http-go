@@ -90,7 +90,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Implemented first version.
 
-[Unreleased]: https://github.com/ccache/ccache-storage-http-go/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/ccache/ccache-storage-http-go/compare/v0.8...HEAD
 [0.8]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.8
 [0.7]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.7
 [0.6]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.6
