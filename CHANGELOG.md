@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.8] - 2026-07-18
 
+[0.8]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.8
+
 ### Fixed
 
 - Fix bazel key padding for short keys.
@@ -19,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fix accept error busy loop.
 
 ## [0.7] - 2026-05-18
+
+[0.7]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.7
 
 ### Added
 
@@ -30,6 +34,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Support for experimental CRSH greeting message format 2.
 
 ## [0.6] - 2026-05-10
+
+[0.6]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.6
 
 ### Added
 
@@ -57,6 +63,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.5] - 2026-03-18
 
+[0.5]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.5
+
 ### Changed
 
 - Change working directory to `/` (or `C:\` on Windows) to avoid blocking
@@ -64,12 +72,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.4] - 2026-03-15
 
+[0.4]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.4
+
 ### Changed
 
 - Set `User-Agent` header to `ccache-storage-http-go/$VERSION` in HTTP requests.
 - Improve generation of release notes.
 
 ## [0.3] - 2026-03-07
+
+[0.3]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.3
 
 ### Changed
 
@@ -79,6 +91,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.2] - 2026-03-05
 
+[0.2]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.2
+
 ### Changed
 
 - Switch license to MIT.
@@ -86,16 +100,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.1] - 2026-01-18
 
+[0.1]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.1
+
 ### Added
 
 - Implemented first version.
-
-[Unreleased]: https://github.com/ccache/ccache-storage-http-go/compare/v0.8...HEAD
-[0.8]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.8
-[0.7]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.7
-[0.6]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.6
-[0.5]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.5
-[0.4]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.4
-[0.3]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.3
-[0.2]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.2
-[0.1]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.1
