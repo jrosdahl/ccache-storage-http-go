@@ -746,7 +746,7 @@ func TestIntegrationBothBearerTokenAttrsIsError(t *testing.T) {
 
 	info := h.ipcInfo()
 
-	wantDiagnostic := "error: bearer-token and bearer-token-file cannot both be set"
+	wantDiagnostic := "warning: bearer-token-file overrides bearer-token"
 	if len(info.diagnostics) != 1 || info.diagnostics[0] != wantDiagnostic {
 		t.Fatalf("diagnostics: want [%q], got %v", wantDiagnostic, info.diagnostics)
 	}

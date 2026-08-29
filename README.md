@@ -97,15 +97,17 @@ See also the [HTTP storage wiki page] for tips on how to set up a storage server
 
 The helper supports the following custom attributes:
 
-- `@bearer-token`: Bearer token for `Authorization` header
-- `@bearer-token-file`: Path to file containing the bearer token for the
-  `Authorization` header (surrounding whitespace is trimmed). The file is read
-  for each request, so the token can be rotated without restarting the helper.
-  Cannot be combined with `@bearer-token`.
-- `@header`: Custom HTTP headers (can be specified multiple times)
-- `@use-netrc`: Enable [netrc](https://everything.curl.dev/usingcurl/netrc.html) authentication
-- `@netrc-file`: Path to custom [netrc](https://everything.curl.dev/usingcurl/netrc.html) file (implies `@use-netrc`)
-- `@layout`: Storage layout mode
+- `@bearer-token`: Bearer token for `Authorization` header.
+- `@bearer-token-file`: File containing a bearer token for the `Authorization`
+  header. The file is read for each request, so the token can be rotated without
+  restarting the helper. Cannot be combined with `@bearer-token`.
+- `@header`: Custom HTTP headers (can be specified multiple times).
+- `@use-netrc`: Enable [netrc](https://everything.curl.dev/usingcurl/netrc.html)
+  authentication.
+- `@netrc-file`: Path to custom
+  [netrc](https://everything.curl.dev/usingcurl/netrc.html) file (implies
+  `@use-netrc`).
+- `@layout`: Storage layout mode:
   - `subdirs` (default): First 2 hex chars as subdirectory
   - `flat`: All files in root directory
   - `bazel`: Bazel Remote Execution API compatible layout
@@ -113,7 +115,11 @@ The helper supports the following custom attributes:
 Example:
 
 ```bash
+# Custom header
 export CCACHE_REMOTE_STORAGE="https://cache.example.com @header=Content-Type=application/octet-stream"
+
+# Bearer token file
+export CCACHE_REMOTE_STORAGE="https://cache.example.com @bearer-token-file=/path/to/token"
 ```
 
 ## Optional debug logging

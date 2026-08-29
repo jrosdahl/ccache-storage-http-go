@@ -56,16 +56,22 @@ func parseConfig(logger *storagehelper.Logger) (*config, error) {
 
 		switch key {
 		case "bearer-token":
+			if value == "" {
+				cfg.Diagnostics = append(cfg.Diagnostics, "error: bearer-token cannot be empty")
+			}
 			cfg.BearerToken = value
 		case "bearer-token-file":
-			// The helper changes its working directory to the filesystem root
-			// after configuration, so anchor a relative path to the invoker's
-			// working directory now.
-			absPath, err := filepath.Abs(value)
-			if err != nil {
-				cfg.Diagnostics = append(cfg.Diagnostics, fmt.Sprintf("error: invalid bearer-token-file path %q: %v", value, err))
+			if value == "" {
+				cfg.Diagnostics = append(cfg.Diagnostics, "error: bearer-token-file cannot be empty")
 			} else {
-				cfg.BearerTokenFile = absPath
+				// The helper changes its working directory to the filesystem root after
+				// configuration, so resolve a relative path to absolute here.
+				absPath, err := filepath.Abs(value)
+				if err != nil {
+					cfg.Diagnostics = append(cfg.Diagnostics, fmt.Sprintf("error: invalid bearer-token-file path %q: %v", value, err))
+				} else {
+					cfg.BearerTokenFile = absPath
+				}
 			}
 		case "header":
 			idx := strings.Index(value, "=")
@@ -92,7 +98,7 @@ func parseConfig(logger *storagehelper.Logger) (*config, error) {
 	}
 
 	if cfg.BearerToken != "" && cfg.BearerTokenFile != "" {
-		cfg.Diagnostics = append(cfg.Diagnostics, "error: bearer-token and bearer-token-file cannot both be set")
+		cfg.Diagnostics = append(cfg.Diagnostics, "warning: bearer-token-file overrides bearer-token")
 	}
 
 	for _, diag := range cfg.Diagnostics {
