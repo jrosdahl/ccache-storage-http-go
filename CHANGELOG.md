@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+### Added
+
+- Prebuilt linux-s390x binary release.
+
 ## [0.9] - 2026-08-30
 
 [0.9]: https://github.com/ccache/ccache-storage-http-go/releases/tag/v0.9
